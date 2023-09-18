@@ -10,7 +10,9 @@ import static org.junit.Assert.assertThat;
 import java.util.Date;
 
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ErrorCollector;
 
 import br.blog.comin.entidades.Filme;
 import br.blog.comin.entidades.Locacao;
@@ -18,6 +20,10 @@ import br.blog.comin.entidades.Usuario;
 import br.blog.comin.utils.DataUtils;
 
 public class LocacaoServiceTest {
+
+	@Rule
+	public ErrorCollector error = new ErrorCollector();
+
 	@Test
 	public void teste() {
 		//cenario
@@ -29,9 +35,8 @@ public class LocacaoServiceTest {
 		Locacao locacao = service.alugarFilme(usuario, filme);
 
 		//verificacao
-		assertThat(locacao.getValor(), is(equalTo(5.0)));
-		assertThat(locacao.getValor(), is(not(6.0)));
-		assertThat(isMesmaData(locacao.getDataLocacao(), new Date()), is(true));
-		assertThat(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)), is(true));
+		error.checkThat(locacao.getValor(), is(equalTo(5.0)));
+		error.checkThat(isMesmaData(locacao.getDataLocacao(), new Date()), is(true));
+		error.checkThat(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)), is(true));
 	}
 }
