@@ -1,14 +1,12 @@
 package br.blog.comin.servicos;
 
 import static br.blog.comin.matchers.MatchersProprios.caiNumaSegunda;
-import static br.blog.comin.utils.DataUtils.isMesmaData;
-import static br.blog.comin.utils.DataUtils.obterDataComDiferencaDias;
+import static br.blog.comin.matchers.MatchersProprios.ehHoje;
+import static br.blog.comin.matchers.MatchersProprios.ehHojeComDiferencaDias;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -57,8 +55,8 @@ public class LocacaoServiceTest {
 
 		//verificacao
 		error.checkThat(locacao.getValor(), is(equalTo(5.0)));
-		error.checkThat(isMesmaData(locacao.getDataLocacao(), new Date()), is(true));
-		error.checkThat(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)), is(true));
+		error.checkThat(locacao.getDataLocacao(), ehHoje());
+		error.checkThat(locacao.getDataRetorno(), ehHojeComDiferencaDias(1));
 	}
 
 	@Test(expected = FilmeSemEstoqueException.class)
