@@ -1,5 +1,6 @@
 package br.blog.comin.servicos;
 
+import static br.blog.comin.matchers.MatchersProprios.caiNumaSegunda;
 import static br.blog.comin.utils.DataUtils.isMesmaData;
 import static br.blog.comin.utils.DataUtils.obterDataComDiferencaDias;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -171,6 +172,7 @@ public class LocacaoServiceTest {
 
 		//verificacao
 		boolean ehSegunda = DataUtils.verificarDiaSemana(retorno.getDataRetorno(), Calendar.MONDAY);
-		Assert.assertTrue(ehSegunda);
+		//Assert.assertTrue(ehSegunda);
+		assertThat(retorno.getDataRetorno(), caiNumaSegunda());
 	}
 }
