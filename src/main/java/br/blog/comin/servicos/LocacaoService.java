@@ -2,6 +2,7 @@ package br.blog.comin.servicos;
 
 import static br.blog.comin.utils.DataUtils.adicionarDias;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import br.blog.comin.entidades.Locacao;
 import br.blog.comin.entidades.Usuario;
 import br.blog.comin.exceptions.FilmeSemEstoqueException;
 import br.blog.comin.exceptions.LocadoraException;
+import br.blog.comin.utils.DataUtils;
 
 public class LocacaoService {
 	
@@ -52,6 +54,9 @@ public class LocacaoService {
 		//Entrega no dia seguinte
 		Date dataEntrega = new Date();
 		dataEntrega = adicionarDias(dataEntrega, 1);
+		if(DataUtils.verificarDiaSemana(dataEntrega, Calendar.SUNDAY)) {
+			dataEntrega = adicionarDias(dataEntrega, 1);
+		}
 		locacao.setDataRetorno(dataEntrega);
 		
 		//Salvando a locacao...	
