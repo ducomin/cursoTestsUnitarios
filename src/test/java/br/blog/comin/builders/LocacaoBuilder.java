@@ -2,6 +2,7 @@ package br.blog.comin.builders;
 
 import static br.blog.comin.builders.FilmeBuilder.umFilme;
 import static br.blog.comin.builders.UsuarioBuilder.umUsuario;
+import static br.blog.comin.utils.DataUtils.obterDataComDiferencaDias;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -29,7 +30,7 @@ public class LocacaoBuilder {
 		elemento.setUsuario(umUsuario().agora());
 		elemento.setFilmes(Arrays.asList(umFilme().agora()));
 		elemento.setDataLocacao(new Date());
-		elemento.setDataRetorno(DataUtils.obterDataComDiferencaDias(1));
+		elemento.setDataRetorno(obterDataComDiferencaDias(1));
 		elemento.setValor(4.0);
 	}
 
@@ -50,6 +51,12 @@ public class LocacaoBuilder {
 
 	public LocacaoBuilder comDataRetorno(Date param) {
 		elemento.setDataRetorno(param);
+		return this;
+	}
+
+	public LocacaoBuilder atrasada(){
+		elemento.setDataLocacao(obterDataComDiferencaDias(-4));
+		elemento.setDataRetorno(obterDataComDiferencaDias(-2));
 		return this;
 	}
 
