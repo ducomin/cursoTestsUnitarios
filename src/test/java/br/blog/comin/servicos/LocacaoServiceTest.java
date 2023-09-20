@@ -6,9 +6,12 @@ import static br.blog.comin.builders.UsuarioBuilder.umUsuario;
 import static br.blog.comin.matchers.MatchersProprios.caiNumaSegunda;
 import static br.blog.comin.matchers.MatchersProprios.ehHoje;
 import static br.blog.comin.matchers.MatchersProprios.ehHojeComDiferencaDias;
+import static br.blog.comin.builders.LocacaoBuilder.umLocacao;
+import static br.blog.comin.utils.DataUtils.obterDataComDiferencaDias;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -25,6 +28,7 @@ import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
 
+import br.blog.comin.dao.EmailService;
 import br.blog.comin.dao.LocacaoDAO;
 import br.blog.comin.dao.SPCService;
 import br.blog.comin.entidades.Filme;
@@ -40,6 +44,7 @@ public class LocacaoServiceTest {
 
 	private SPCService spc;
 	private LocacaoDAO dao;
+	private EmailService email;
 
 	@Rule
 	public ErrorCollector error = new ErrorCollector();
@@ -54,6 +59,8 @@ public class LocacaoServiceTest {
 		service.setLocacaoDAO(dao);
 		spc = Mockito.mock(SPCService.class);
 		service.setSPCService(spc);
+		email = Mockito.mock(EmailService.class);
+		service.setEmailService(email);
 	}
 
 	@Test
@@ -129,15 +136,37 @@ public class LocacaoServiceTest {
 	public void naoDeveAlugarFilmeParaNegativadoSPC() throws FilmeSemEstoqueException, LocadoraException{
 		//cenario
 		Usuario usuario = umUsuario().agora();
-		Usuario usuario2 = umUsuario().comNome("Usuario 2").agora();
 		List<Filme> filmes = Arrays.asList(umFilme().agora());
 
 		when(spc.possuiNegativacao(usuario)).thenReturn(true);
 
-		exception.expect(LocadoraException.class);
-		exception.expectMessage("Usuário Negativado");
+		//acao
+		try {
+			service.alugarFilme(usuario, filmes);
+			//verificacao
+			Assert.fail();
+		} catch (LocadoraException e) {
+			Assert.assertThat(e.getMessage(), is("Usuário Negativado"));
+		}
+
+		verify(spc).possuiNegativacao(usuario);
+	}
+
+	@Test
+	public void deveEnviarEmailParaLocacoesAtrasadas(){
+		//cenario
+		Usuario usuario = umUsuario().agora();
+		List<Locacao> locacoes = Arrays.asList(
+				umLocacao()
+						.comUsuario(usuario)
+						.comDataRetorno(obterDataComDiferencaDias(-2))
+						.agora());
+		when(dao.obterLocacoesPendentes()).thenReturn(locacoes);
 
 		//acao
-		service.alugarFilme(usuario, filmes);
+		service.notificarAtrasos();
+
+		//verificacao
+		verify(email).notificarAtraso(usuario);
 	}
 }
