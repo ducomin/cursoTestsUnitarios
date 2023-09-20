@@ -22,7 +22,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
+import org.mockito.Mockito;
 
+import br.blog.comin.dao.LocacaoDAO;
 import br.blog.comin.entidades.Filme;
 import br.blog.comin.entidades.Locacao;
 import br.blog.comin.entidades.Usuario;
@@ -43,6 +45,8 @@ public class LocacaoServiceTest {
 	@Before
 	public void setup(){
 		service = new LocacaoService();
+		LocacaoDAO dao = Mockito.mock(LocacaoDAO.class);
+		service.setLocacaoDAO(dao);
 	}
 
 	@Test
