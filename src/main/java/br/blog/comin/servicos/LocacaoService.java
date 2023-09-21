@@ -71,7 +71,7 @@ public class LocacaoService {
 		return locacao;
 	}
 
-	private static Double getValorTotal(final List<Filme> filmes) {
+	private Double getValorTotal(final List<Filme> filmes) {
 		Double valorTotal = 0d;
 		for(int i = 0; i < filmes.size(); i++) {
 			Filme filme = filmes.get(i);
